@@ -9,6 +9,7 @@
  */
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <time.h>
 #include <stdio.h>
 
@@ -110,8 +111,18 @@ public:
             if (inputType == CAMERA)
 			{
                 inputCapture.open(cameraID);
-				inputCapture.set(cv::CAP_PROP_FRAME_WIDTH, 320);
-				inputCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+				if (!inputCapture.isOpened() && cameraID != 0)
+				{
+					cerr << " Unable to open camera index " << cameraID << ", trying 0 instead." << endl;
+					cameraID = 0;
+					inputCapture.open(cameraID);
+				}
+				if (inputCapture.isOpened())
+				{
+					input = std::to_string(cameraID);
+					inputCapture.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+					inputCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+				}
 			}
             if (inputType == VIDEO_FILE)
                 inputCapture.open(input);

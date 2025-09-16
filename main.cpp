@@ -52,9 +52,17 @@ using namespace std::chrono_literals;
 int liveVideo()
 {
 	// Create a VideoCapture object and use camera to capture the video
-		VideoCapture cap(1);
+		VideoCapture cap;
+		int camera_index = 1;
+		if (!cap.open(camera_index))
+		{
+				cout << "Unable to open camera index " << camera_index << ". Trying default camera." << endl;
+				camera_index = 0;
+				cap.open(camera_index);
+		}
 		// Check if camera opened successfully
-		if (!cap.isOpened()) {
+		if (!cap.isOpened())
+		{
 				cout << "Error opening video stream" << endl;
 				return -1;
 		}
