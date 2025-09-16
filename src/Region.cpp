@@ -1,6 +1,6 @@
 /*
 * This code is provided as part of "A Practical Introduction to Computer Vision with OpenCV"
-* by Kenneth Dawson-Howe © Wiley & Sons Inc. 2014.  All rights reserved.
+* by Kenneth Dawson-Howe Wiley & Sons Inc. 2014.  All rights reserved.
 */
 #include "Utilities.h"
 
@@ -24,7 +24,7 @@ Mat kmeans_clustering(Mat& image, int k, int iterations)
 	kmeans(samples, k, labels, TermCriteria(cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS, 1, 0.0001),
 		iterations, KMEANS_PP_CENTERS, centres);
 	// Put the relevant cluster centre values into a result image
-	Mat& result_image = Mat(image.size(), image.type());
+	Mat result_image = Mat(image.size(), image.type());
 	for (int row = 0; row<image.rows; row++)
 		for (int col = 0; col<image.cols; col++)
 			for (int channel = 0; channel < image.channels(); channel++)

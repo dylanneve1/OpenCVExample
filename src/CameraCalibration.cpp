@@ -5,7 +5,7 @@
  *
  * This version of the code is provided as part of
  * "A Practical Introduction to Computer Vision with OpenCV"
- * by Kenneth Dawson-Howe © Wiley & Sons Inc. 2014.  All rights reserved.
+ * by Kenneth Dawson-Howe Wiley & Sons Inc. 2014.  All rights reserved.
  */
 #include <iostream>
 #include <sstream>
@@ -323,12 +323,12 @@ static void saveCameraParams( Settings& s, Size& imageSize, Mat& cameraMatrix, M
 
     if( s.flag )
     {
-        sprintf_s( buf, "flags: %s%s%s%s",
+        sprintf( buf, "flags: %s%s%s%s",
             s.flag & cv::CALIB_USE_INTRINSIC_GUESS ? " +use_intrinsic_guess" : "",
             s.flag & cv::CALIB_FIX_ASPECT_RATIO ? " +fix_aspectRatio" : "",
             s.flag & cv::CALIB_FIX_PRINCIPAL_POINT ? " +fix_principal_point" : "",
             s.flag & cv::CALIB_ZERO_TANGENT_DIST ? " +zero_tangent_dist" : "" );
-		fs.writeComment( buf, 0 );
+        fs.writeComment( buf, 0 );
 
     }
 

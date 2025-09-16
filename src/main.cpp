@@ -1,6 +1,6 @@
 /*
  * This code is provided as part of "A Practical Introduction to Computer Vision with OpenCV"
- * by Kenneth Dawson-Howe © Wiley & Sons Inc. 2014.  All rights reserved.
+ * by Kenneth Dawson-Howe Wiley & Sons Inc. 2014.  All rights reserved.
  */
 #include "Utilities.h"
 #include <iostream>
@@ -93,12 +93,11 @@ int liveVideo()
 	return 0;
 }
 
-int main(int argc, const char** argv)
+int main()
 {
 //	liveVideo();
-	char* file_location = "Media/";
-	char* image_files[] = {
-
+	const char* file_location = "Media/";
+	const char* image_files[] = {
 		"TrinityRegentHouse.jpg", //0
 		"TrinityCampanile1.jpg",
 		"TrinityCampanile3.jpg",
@@ -152,7 +151,7 @@ int main(int argc, const char** argv)
 	Rect Bicycles_position_frame_180(242,26,37,60);
 	Rect Person_position_frame_100(507,110,67,90);
 	// Load video(s)
-	char* video_files[] = { 
+	const char* video_files[] = { 
 		"PETS2000_mjpeg.avi",
 		"Bicycles_mjpeg.avi",
 		"ObjectAbandonmentAndRemoval1_mjpeg.avi" };
@@ -173,7 +172,7 @@ int main(int argc, const char** argv)
 
 	// Load Haar Cascade(s)
 	vector<CascadeClassifier> cascades;
-	char* cascade_files[] = { 
+	const char* cascade_files[] = { 
 		"haarcascades/haarcascade_frontalface_alt.xml" };
 	int number_of_cascades = sizeof(cascade_files)/sizeof(cascade_files[0]);
 	for (int cascade_file_no=0; (cascade_file_no < number_of_cascades); cascade_file_no++)

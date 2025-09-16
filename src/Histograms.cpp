@@ -1,6 +1,6 @@
 /*
  * This code is provided as part of "A Practical Introduction to Computer Vision with OpenCV"
- * by Kenneth Dawson-Howe © Wiley & Sons Inc. 2014.  All rights reserved.
+ * by Kenneth Dawson-Howe Wiley & Sons Inc. 2014.  All rights reserved.
  */
 #include "Utilities.h"
 
@@ -110,7 +110,7 @@ public:
 	}
 	Mat BackProject(Mat& image)
 	{
-		Mat& result = image.clone();
+		Mat result = image.clone();
 		if (mNumberChannels == 1)
 		{
 			const float* channel_ranges[] = { mChannelRange, mChannelRange, mChannelRange };
@@ -159,7 +159,7 @@ public:
 	}
 	Mat BackProject(Mat& image)
 	{
-		Mat& result = image.clone();
+		Mat result = image.clone();
 		const float* channel_ranges[] = { mChannelRange, mChannelRange, mChannelRange };
 		calcBackProject(&image, 1, mChannelNumbers, mHistogram, result, channel_ranges, 255.0);
 		return result;
@@ -277,7 +277,7 @@ public:
 
 Mat BackProjection(Mat query_image, Mat all_images[], int number_of_images)
 {
-	Mat& result = query_image.clone();
+	Mat result = query_image.clone();
 	ColourHistogram histogram3D(all_images, number_of_images, 4);
 	histogram3D.NormaliseHistogram();
 	Mat back_projection_probabilities = histogram3D.BackProject(query_image);
@@ -335,7 +335,7 @@ Mat BackProjection(Mat query_image, Mat sample_image)
 	//imshow("Back Projection", output1);
 	return back_projection_probabilities_display;
 */
-	Mat& result = query_image.clone();
+	Mat result = query_image.clone();
 	ColourHistogram histogram3D(sample_image, 8);
 	histogram3D.NormaliseHistogram();
 	Mat back_projection_probabilities = histogram3D.BackProject(query_image);
@@ -417,7 +417,7 @@ void HistogramsDemos(Mat& dark_image, Mat& fruit_image, Mat& people_image, Mat& 
 	// Image selection based on histogram comparison
 	timer->reset();
 	int index_of_reference_image = 0;
-	Mat& reference_image = all_images[index_of_reference_image];
+	Mat reference_image = all_images[index_of_reference_image];
 	cvtColor(all_images[index_of_reference_image], hls_image, COLOR_BGR2HLS);
 	ColourHistogram reference_histogram(hls_image, 4);
 	reference_histogram.NormaliseHistogram();

@@ -1,6 +1,6 @@
 /*
  * This code is provided as part of "A Practical Introduction to Computer Vision with OpenCV"
- * by Kenneth Dawson-Howe © Wiley & Sons Inc. 2014.  All rights reserved.
+ * by Kenneth Dawson-Howe Wiley & Sons Inc. 2014.  All rights reserved.
  */
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -253,7 +253,7 @@ void Timestamper::putTimes(Mat output_image)
 
 Mat StretchImage( Mat& image )
 {
-	Mat& result = image.clone();
+	Mat result = image.clone();
 	// Find max value
 	int image_rows = image.rows;
 	int image_channels = image.channels();

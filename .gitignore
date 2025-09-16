@@ -1,3 +1,4 @@
 .vs
 Media/
 .DS_Store
+build/

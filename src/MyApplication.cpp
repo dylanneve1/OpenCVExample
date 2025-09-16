@@ -3,7 +3,7 @@
 
 
 // Test videos and ground truth
-char* abandoned_removed_video_files[] = {
+const char* abandoned_removed_video_files[] = {
 	"Video01.avi",
 	"Video02.avi",
 	"Video03.avi",
@@ -13,7 +13,8 @@ char* abandoned_removed_video_files[] = {
 	"Video07.avi",
 	"Video08.avi",
 	"Video09.avi",
-	"Video10.avi" };
+	"Video10.avi" 
+};
 #define ABANDONED 1
 #define REMOVED 2
 #define OTHER_CHANGE 3
@@ -47,7 +48,7 @@ int object_locations[][7] = {
 
 void MyApplication()
 {
-	char* file_location = "Media/Abandoned/";
+	const char* file_location = "Media/Abandoned/";
 	int number_of_videos = sizeof(abandoned_removed_video_files) / sizeof(abandoned_removed_video_files[0]);
 	VideoCapture* video = new VideoCapture[number_of_videos];
 	for (int video_file_no = 1; (video_file_no <= number_of_videos); video_file_no++)
@@ -66,7 +67,7 @@ void MyApplication()
 				frame_title.append(std::to_string(frame_no));
 				writeText(current_frame, frame_title, 15, 15);
 				// Draw ground truth
-				for (int current = 0; (current < sizeof(object_locations) / 7); current++)
+				for (unsigned int current = 0; (current < sizeof(object_locations) / 7); current++)
 				{
 					if ((object_locations[current][IMAGE_NUMBER_INDEX] == video_file_no) && (object_locations[current][FRAME_NUMBER_INDEX] <= frame_no))
 					{
@@ -78,7 +79,7 @@ void MyApplication()
 					}
 				}
 				imshow(abandoned_removed_video_files[video_file_no-1], current_frame);
-				char choice = cv::waitKey(100);  // This introduces a delay between frame.  The length of the delay/number can be reduced.
+				[[maybe_unused]] char choice = cv::waitKey(100);  // This introduces a delay between frame.  The length of the delay/number can be reduced.
 				video[video_file_no-1] >> current_frame;
 				frame_no++;
 			}
