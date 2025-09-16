@@ -110,7 +110,7 @@ public:
 	}
 	Mat BackProject(Mat& image)
 	{
-		Mat& result = image.clone();
+		Mat result = image.clone();
 		if (mNumberChannels == 1)
 		{
 			const float* channel_ranges[] = { mChannelRange, mChannelRange, mChannelRange };
@@ -159,7 +159,7 @@ public:
 	}
 	Mat BackProject(Mat& image)
 	{
-		Mat& result = image.clone();
+		Mat result = image.clone();
 		const float* channel_ranges[] = { mChannelRange, mChannelRange, mChannelRange };
 		calcBackProject(&image, 1, mChannelNumbers, mHistogram, result, channel_ranges, 255.0);
 		return result;
@@ -277,7 +277,7 @@ public:
 
 Mat BackProjection(Mat query_image, Mat all_images[], int number_of_images)
 {
-	Mat& result = query_image.clone();
+	Mat result = query_image.clone();
 	ColourHistogram histogram3D(all_images, number_of_images, 4);
 	histogram3D.NormaliseHistogram();
 	Mat back_projection_probabilities = histogram3D.BackProject(query_image);
@@ -321,7 +321,7 @@ Mat BackProjection(Mat query_image, Mat sample_image)
 	char c = cv::waitKey();
 	*/
 	/*
-	Mat& result = query_image.clone();
+	Mat result = query_image.clone();
 	Mat histogram_display;
 	HueHistogram histogram3D(sample_image, 16);
 	histogram3D.Draw(histogram_display);
@@ -335,7 +335,7 @@ Mat BackProjection(Mat query_image, Mat sample_image)
 	//imshow("Back Projection", output1);
 	return back_projection_probabilities_display;
 */
-	Mat& result = query_image.clone();
+	Mat result = query_image.clone();
 	ColourHistogram histogram3D(sample_image, 8);
 	histogram3D.NormaliseHistogram();
 	Mat back_projection_probabilities = histogram3D.BackProject(query_image);

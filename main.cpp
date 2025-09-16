@@ -47,6 +47,8 @@
 #include <chrono>
 #include <thread>
 
+using namespace std::chrono_literals;
+
 int liveVideo()
 {
 	// Create a VideoCapture object and use camera to capture the video

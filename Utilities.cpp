@@ -253,7 +253,7 @@ void Timestamper::putTimes(Mat output_image)
 
 Mat StretchImage( Mat& image )
 {
-	Mat& result = image.clone();
+	Mat result = image.clone();
 	// Find max value
 	int image_rows = image.rows;
 	int image_channels = image.channels();

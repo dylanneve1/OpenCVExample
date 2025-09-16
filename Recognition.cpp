@@ -91,8 +91,7 @@ void ChamferMatching( Mat& chamfer_image, Mat& model, Mat& matching_image )
 		{
 			if (*curr_point > 0)
 			{
-				Point& new_point = Point(model_column,model_row);
-				model_points.push_back(new_point);
+				model_points.emplace_back(model_column, model_row);
 			}
 			curr_point += image_channels;
 		}
@@ -159,7 +158,7 @@ void myConvexityDefects( vector<Point> contour, vector<int> hull_indices, vector
 	}
 }
 
-void SupportVectorMachineDemo(Mat& class1_samples, char* class1_name, Mat& class2_samples, char* class2_name, Mat& unknown_samples)
+void SupportVectorMachineDemo(Mat& class1_samples, const char* class1_name, Mat& class2_samples, const char* class2_name, Mat& unknown_samples)
 {
     float labels[MAX_SAMPLES];
     float training_data[MAX_SAMPLES][2];
@@ -238,7 +237,7 @@ void SupportVectorMachineDemo(Mat& class1_samples, char* class1_name, Mat& class
 					float prediction = svm->predict(sampleMat);
 					class_id = (prediction > 0.0) ? 1 : (prediction < 0.0) ? 2 : 0;
 				}
-				char* current_class_name = (class_id==1) ? class1_name : (class_id==2) ? class2_name : "Unknown";
+				const char* current_class_name = (class_id==1) ? class1_name : (class_id==2) ? class2_name : "Unknown";
 
 				sprintf(output,"Class=%s, Features %.2f, %.2f", current_class_name, feature[0]/((float) MAX_FEATURE_VALUE), feature[1]/((float) MAX_FEATURE_VALUE));
 				Point location( contours[contour_number][0].x-40, contours[contour_number][0].y-3 );

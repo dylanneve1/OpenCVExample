@@ -323,7 +323,7 @@ static void saveCameraParams( Settings& s, Size& imageSize, Mat& cameraMatrix, M
 
     if( s.flag )
     {
-        sprintf_s( buf, "flags: %s%s%s%s",
+        snprintf( buf, sizeof(buf), "flags: %s%s%s%s",
             s.flag & cv::CALIB_USE_INTRINSIC_GUESS ? " +use_intrinsic_guess" : "",
             s.flag & cv::CALIB_FIX_ASPECT_RATIO ? " +fix_aspectRatio" : "",
             s.flag & cv::CALIB_FIX_PRINCIPAL_POINT ? " +fix_principal_point" : "",
