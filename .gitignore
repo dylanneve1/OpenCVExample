@@ -2,3 +2,5 @@
 Media/
 .DS_Store
 build/
+gem/
+
