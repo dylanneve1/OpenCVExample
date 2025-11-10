@@ -136,18 +136,20 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
             detCountPerClass[det.label]++;
     }
 
-    cout << "\n===================== PER-VIDEO PERFORMANCE =====================\n";
+    cout << "- PER-VIDEO PERFORMANCE\n";
 
     // Evaluate each video separately
     for (int v = 1; v <= numVideos; ++v) {
-        // Grab indices for GT and detections in this video
+        // Get the GT and detections in this video
         vector<int> gtIdx, detIdx;
         
         for (size_t i = 0; i < gtEvents.size(); ++i) {
-            if (gtEvents[i].video == v) gtIdx.push_back(i);
+            if (gtEvents[i].video == v)
+                gtIdx.push_back(i);
         }
         for (size_t j = 0; j < detEvents.size(); ++j) {
-            if (detEvents[j].video == v) detIdx.push_back(j);
+            if (detEvents[j].video == v)
+                detIdx.push_back(j);
         }
 
         // Skip if nothing to evaluate here
@@ -167,35 +169,21 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
         // Count labels for this video
         for (int idx : gtIdx) {
             int lbl = gtEvents[idx].label;
-            if (lbl >= 1 && lbl <= 3) localGtCount[lbl]++;
+            if (lbl >= 1 && lbl <= 3)
+                localGtCount[lbl]++;
         }
         for (int idx : detIdx) {
             int lbl = detEvents[idx].label;
-            if (lbl >= 1 && lbl <= 3) localDetCount[lbl]++;
+            if (lbl >= 1 && lbl <= 3)
+                localDetCount[lbl]++;
         }
 
         double delaySum = 0.0, iouSum = 0.0;
         int matches = 0;
 
-        cout << "\n--- Video " << v << " (" << abandoned_removed_video_files[v-1] << ") ---\n";
+        cout << "  - Video " << v << " (" << abandoned_removed_video_files[v-1] << ")\n";
 
-        // Show GT events for debugging
-        cout << "  GT events:\n";
-        for (size_t i = 0; i < gtIdx.size(); ++i) {
-            const GTEvent& gt = gtEvents[gtIdx[i]];
-            cout << "    #" << i << " frame=" << gt.frame 
-                 << " label=" << label_strings[gt.label] << "\n";
-        }
-        
-        // Show detections for debugging
-        cout << "  Detections:\n";
-        for (size_t i = 0; i < detIdx.size(); ++i) {
-            const DetectedEvent& det = detEvents[detIdx[i]];
-            cout << "    #" << i << " frame=" << det.frame 
-                 << " label=" << label_strings[det.label] << "\n";
-        }
-
-        // Match detections to GT - for each GT, find best detection
+        // Match detections to GT, for each GT, find best detection
         for (size_t i = 0; i < gtIdx.size(); ++i) {
             const GTEvent& gt = gtEvents[gtIdx[i]];
             
@@ -255,14 +243,9 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
                     localConf[gtL][detL]++;
                     confMatrix[gtL][detL]++;
                 }
-
-                cout << "  MATCH: GT(" << label_strings[gt.label] << ", f=" << gt.frame 
-                     << ") <-> Det(" << label_strings[det.label] << ", f=" << det.frame
-                     << ") delay=" << delay << "s, IoU=" << bestIoU << "\n";
             } else {
                 // Missed this GT event
                 FN++;
-                cout << "  MISS: GT(" << label_strings[gt.label] << ", f=" << gt.frame << ")\n";
             }
         }
 
@@ -270,8 +253,6 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
         for (size_t j = 0; j < detIdx.size(); ++j) {
             if (matched[j] == -1) {
                 FP++;
-                const DetectedEvent& det = detEvents[detIdx[j]];
-                cout << "  FP: Det(" << label_strings[det.label] << ", f=" << det.frame << ")\n";
             }
         }
 
@@ -283,22 +264,30 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
         totalIoU += iouSum;
         numMatches += matches;
 
-        // Calculate metrics for this video
-        double prec = (TP + FP > 0) ? (double)TP / (TP + FP) : 0.0;
-        double rec = (TP + FN > 0) ? (double)TP / (TP + FN) : 0.0;
-        double f1 = (prec + rec > 0) ? 2 * prec * rec / (prec + rec) : 0.0;
+        double prec = 0.0;
+        double rec = 0.0;
+        double f1 = 0.0;
 
-        cout << "\nDetection Stats:\n";
-        cout << "  TP=" << TP << " FP=" << FP << " FN=" << FN << "\n";
-        cout << "  Precision=" << prec << " Recall=" << rec << " F1=" << f1 << "\n";
+        if (TP + FP > 0) {
+            // Calculate metrics for this video
+            prec = (double)TP / (TP + FP);
+            rec = (double)TP / (TP + FN);
+        }
+        if (prec + rec > 0) {
+            f1 = 2 * prec * rec / (prec + rec);
+        }
+
+        cout << "    - Detection Stats:\n";
+        cout << "      TP=" << TP << " FP=" << FP << " FN=" << FN << "\n";
+        cout << "      Precision=" << prec << " Recall=" << rec << " F1=" << f1 << "\n";
 
         if (matches > 0) {
-            cout << "  Avg delay: " << delaySum/matches << "s\n";
-            cout << "  Avg IoU: " << iouSum/matches << "\n";
+            cout << "      Avg delay: " << delaySum/matches << "s\n";
+            cout << "      Avg IoU: " << iouSum/matches << "\n";
         }
 
         // Per-class metrics for this video
-        cout << "Classification per class:\n";
+        cout << "    - Classification Stats:\n";
         for (int c = 1; c <= 3; ++c) {
             int TPc = localConf[c][c];
             int FNc = localGtCount[c] - TPc;
@@ -307,30 +296,30 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
             double p = (TPc + FPc > 0) ? (double)TPc / (TPc + FPc) : 0.0;
             double r = (TPc + FNc > 0) ? (double)TPc / (TPc + FNc) : 0.0;
             
-            cout << "  " << label_strings[c] << ": GT=" << localGtCount[c] 
+            cout << "      " << label_strings[c] << ": GT=" << localGtCount[c] 
                  << " Det=" << localDetCount[c] << " TP=" << TPc 
                  << " Prec=" << p << " Rec=" << r << "\n";
         }
     }
 
     // Print global results
-    cout << "\n===================== OVERALL PERFORMANCE =====================\n";
+    cout << "\n- Overall Performance\n";
 
     double gPrec = (totalTP + totalFP > 0) ? (double)totalTP / (totalTP + totalFP) : 0.0;
     double gRec = (totalTP + totalFN > 0) ? (double)totalTP / (totalTP + totalFN) : 0.0;
     double gF1 = (gPrec + gRec > 0) ? 2 * gPrec * gRec / (gPrec + gRec) : 0.0;
 
-    cout << "\nOverall Detection:\n";
-    cout << "  TP=" << totalTP << " FP=" << totalFP << " FN=" << totalFN << "\n";
-    cout << "  Precision=" << gPrec << " Recall=" << gRec << " F1=" << gF1 << "\n";
+    cout << "  - Overall Detection:\n";
+    cout << "    TP=" << totalTP << " FP=" << totalFP << " FN=" << totalFN << "\n";
+    cout << "    Precision=" << gPrec << " Recall=" << gRec << " F1=" << gF1 << "\n";
 
     if (numMatches > 0) {
-        cout << "  Avg delay: " << totalDelay/numMatches << "s\n";
-        cout << "  Avg IoU: " << totalIoU/numMatches << "\n";
+        cout << "    Avg delay: " << totalDelay/numMatches << "s\n";
+        cout << "    Avg IoU: " << totalIoU/numMatches << "\n";
     }
 
     // Global per-class metrics
-    cout << "\nOverall Classification:\n";
+    cout << "  - Overall Classification:\n";
     for (int c = 1; c <= 3; ++c) {
         int TPc = confMatrix[c][c];
         int FNc = gtCountPerClass[c] - TPc;
@@ -339,22 +328,20 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
         double p = (TPc + FPc > 0) ? (double)TPc / (TPc + FPc) : 0.0;
         double r = (TPc + FNc > 0) ? (double)TPc / (TPc + FNc) : 0.0;
         
-        cout << "  " << label_strings[c] << ": GT=" << gtCountPerClass[c] 
+        cout << "    " << label_strings[c] << ": GT=" << gtCountPerClass[c] 
              << " Det=" << detCountPerClass[c] << " TP=" << TPc 
              << " Prec=" << p << " Rec=" << r << "\n";
     }
 
     // Confusion matrix
     cout << "\nConfusion Matrix (rows=GT, cols=Pred):\n";
-    cout << "           Abandoned  Removed  Other\n";
-    for (int r = 1; r <= 3; ++r) {
-        cout << label_strings[r] << ":  ";
-        for (int c = 1; c <= 3; ++c) {
-            cout << confMatrix[r][c] << "       ";
-        }
-        cout << "\n";
-    }
-    cout << "===============================================================\n\n";
+    cout << "              Abandoned  Removed  Other\n";
+    cout << "Abandoned:    " << confMatrix[1][1] << "          " 
+         << confMatrix[1][2] << "        " << confMatrix[1][3] << "\n";
+    cout << "Removed:      " << confMatrix[2][1] << "          " 
+         << confMatrix[2][2] << "        " << confMatrix[2][3] << "\n";
+    cout << "Other Change: " << confMatrix[3][1] << "          " 
+         << confMatrix[3][2] << "        " << confMatrix[3][3] << "\n";
 }
 
 // Main Application
