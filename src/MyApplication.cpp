@@ -89,17 +89,6 @@ struct Detection {
     int    label;  // Current frame classification
 };
 
-// IoU calculator
-static double IoU(const Rect& a, const Rect& b) {
-    Rect inter = a & b;
-    if (inter.empty()) {
-        return 0.0;
-    }
-    double interArea = static_cast<double>(inter.area());
-    double unionArea = static_cast<double>(a.area() + b.area() - inter.area());
-    return interArea / unionArea;
-}
-
 // Performance Evaluation
 void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<double>& videoFps) {
     // Build ground truth list from the object_locations array
@@ -236,7 +225,14 @@ void EvaluatePerformance(const vector<DetectedEvent>& detEvents, const vector<do
                     minFrameDiff = absDiff;
                     actualFrameDiff = frameDiff;
                     bestDet = j;
-                    bestIoU = IoU(gt.bbox, det.bbox);
+                    Rect inter = gt.bbox & det.bbox;
+                    if (inter.empty()) {
+                        bestIoU = 0.0;
+                    } else {
+                        double interArea = static_cast<double>(inter.area());
+                        double unionArea = static_cast<double>(gt.bbox.area() + det.bbox.area() - inter.area());
+                        bestIoU = interArea / unionArea;
+                    }
                 }
             }
 
