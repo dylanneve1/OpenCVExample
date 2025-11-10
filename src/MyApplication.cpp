@@ -410,7 +410,7 @@ void MyApplication()
         const int   LOCK_STABLE_FRAMES   = static_cast<int>(fps * 1.0); // Need ~1s near max size to lock
         const double MASS_LOSS_FACTOR    = 0.5;                         // 50% mass loss = removed
 
-        // Per-pixel counter: how long a pixel has been in "abandoned" state
+        // Per-pixel counter
         Mat abandoned_counter(current_frame.rows, current_frame.cols, CV_16U, Scalar(0));
 
         int frame_no = 1;
@@ -435,7 +435,6 @@ void MyApplication()
             // Draw ground truth boxes
             for (int current = 0; current < NUM_OBJECT_LOCATIONS; current++) {
                 if ((object_locations[current][IMAGE_NUMBER_INDEX] == video_file_no) && (object_locations[current][FRAME_NUMBER_INDEX] <= frame_no)) {
-                    // Colour coding: cyan=other, green=abandoned, red=removed
                     Scalar colour(
                         (object_locations[current][CHANGE_TYPE_INDEX] == OTHER_CHANGE) ? 0xFF : 0x00,
                         (object_locations[current][CHANGE_TYPE_INDEX] == ABANDONED)    ? 0xFF : 0x00,
@@ -682,15 +681,17 @@ void MyApplication()
             }
 
             // Drop stale, never-locked tracks
-            tracks.erase(
-                remove_if(tracks.begin(), tracks.end(),
-                          [MAX_MISSED_FRAMES](const TrackedRegion& tr)
-                          {
-                              return (!tr.locked && !tr.removalLogged &&
-                                      tr.framesSinceSeen > MAX_MISSED_FRAMES);
-                          }),
-                tracks.end()
-            );
+            for (size_t i = 0; i < tracks.size();) {
+                const TrackedRegion& tr = tracks[i];
+
+                bool stale = (!tr.locked && !tr.removalLogged && tr.framesSinceSeen > MAX_MISSED_FRAMES);
+
+                if (stale) {
+                    tracks.erase(tracks.begin() + i);
+                } else {
+                    ++i;
+                }
+            }
 
             // Lock bounding boxes and detect removals
             for (auto& tr : tracks) {
